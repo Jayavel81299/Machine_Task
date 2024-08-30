@@ -44,8 +44,9 @@ $('#project_manager_id, #user_ids, #name, #description, #status, #start_date, #e
 $('#formSubmit').on('submit', function(event) {
     event.preventDefault();
     let isValid = true;
-
-    isValid = validateInput($('#project_manager_id'), '.project_manager_id-error') && isValid;
+    if ($('#projectManage').hasClass('checkmanager')) {
+        isValid = validateInput($('#project_manager_id'), '.project_manager_id-error') && isValid;
+    }
     isValid = validateInput($('#user_ids'), '.user_ids-error') && isValid;
     isValid = validateInput($('#name'), '.name-error') && isValid;
     isValid = validateInput($('#description'), '.description-error') && isValid;
