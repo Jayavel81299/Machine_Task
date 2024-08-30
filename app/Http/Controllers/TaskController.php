@@ -24,6 +24,9 @@ class TaskController extends Controller
                     $query->where('project_manager_id', auth()->user()->id);
                 });
             }
+            if (auth()->user()->role == 'team_member') {
+                $query->where('user_id', auth()->user()->id);
+            }
             if ($startDate) {
                 $startDate = \Carbon\Carbon::parse($startDate)->format('Y-m-d');
                 $query->whereDate('start_date', '>=', $startDate);
