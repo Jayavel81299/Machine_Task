@@ -1,20 +1,20 @@
 @extends('admin.layouts.app')
 
 @section('custom_styles')
-{{ $title = isset($edit) ? '- Edit User' : '- Add User' }}
+{{ $title = isset($edit) ? '- Edit Team Member' : '- Add Team Member' }}
 @endsection
 
 @section('content')
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
       <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-      <li class="breadcrumb-item"><a href="{{ route('users.index') }}">Users List</a></li>
-      <li class="breadcrumb-item active" aria-current="page">{{ isset($edit) ? 'Edit User' : 'Add User' }}</li>
+      <li class="breadcrumb-item"><a href="{{ route('users.index') }}">Team Members List</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{{ isset($edit) ? 'Edit Team Member' : 'Add Team Member' }}</li>
     </ol>
   </nav>
 <div class="card">
     <div class="card-body">
-        <h5 class="card-title">{{ isset($edit) ? 'Edit User' : 'Add User' }}</h5>
+        <h5 class="card-title">{{ isset($edit) ? 'Edit Team Member' : 'Add Team Member' }}</h5>
         <form id="formSubmit" action="{{ isset($edit) ? route('users.update', $edit->id) : route('users.store') }}" method="POST">
             @csrf
             @if(isset($edit))

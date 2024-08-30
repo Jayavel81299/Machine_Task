@@ -25,6 +25,26 @@
                 @endisset
                 <div class="row">
                     <!-- Project Name -->
+                    @if(auth()->user()->role == 'admin')
+                    <div class="col-md-6">
+                        <label for="name" class="col-form-label">Project Managers</label>
+                        <select name="project_manager_id" id="project_manager_id" class="form-select">
+                            <option value="" disabled selected="true">Select a Project Manager</option>
+                            @foreach($managers as $manager)
+                                <option value="{{ $manager->id }}" 
+                                    {{ isset($edit) && $manager->id == $edit->project_manager_id ? 'selected' : '' }}>
+                                    {{ $manager->name }}
+                                </option>
+                            @endforeach
+                            @if($managers->isEmpty())
+                                <option value="" disabled>No Project Managers Available</option>
+                            @endif
+                        </select>
+                        
+                        <div class="text-danger project_manager_id-error errors_div"></div>
+                    </div>
+                    @endif
+
                     <div class="col-md-6">
                         <label for="name" class="col-form-label">Project Name</label>
                         <input type="text" name="name" id="name" class="form-control"

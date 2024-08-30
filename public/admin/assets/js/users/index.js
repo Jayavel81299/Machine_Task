@@ -4,7 +4,6 @@ $(document).on('submit', '#formSubmit', function(e) {
 
     if (validateForm(form)) {
         var submitBtn = form.find('button[type="submit"]');
-        submitBtn.prop('disabled', true);
         var formData = new FormData(this);
         var url = form.attr('action');
         var method = form.attr('method');

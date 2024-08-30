@@ -18,7 +18,12 @@ class TaskController extends Controller
             $query = Task::query();
             $startDate = $request->input('start_date');
             $endDate = $request->input('end_date');
-            
+
+            if(auth()->user()->role == 'project_manager'){
+                $query->whereHas('project', function ($query) {
+                    $query->where('project_manager_id', auth()->user()->id);
+                });
+            }
             if ($startDate) {
                 $startDate = \Carbon\Carbon::parse($startDate)->format('Y-m-d');
                 $query->whereDate('start_date', '>=', $startDate);
@@ -51,14 +56,22 @@ class TaskController extends Controller
 
     public function create()
     {
-        $projects = Project::where('project_manager_id', auth()->user()->id)->select('id', 'name')->get();
+        $project = new Project();
+        if(auth()->user()->role == 'project_manager'){
+            $project->where('project_manager_id', auth()->user()->id);
+        }
+        $projects = $project->select('id', 'name')->get();
         return view('admin.pages.tasks.create', compact('projects'));
     }
 
     public function edit(string $id)
     {
         $edit = Task::findOrFail($id);
-        $projects = Project::where('project_manager_id', auth()->user()->id)->select('id', 'name')->get();
+        $project = new Project();
+        if(auth()->user()->role == 'project_manager'){
+            $project->where('project_manager_id', auth()->user()->id);
+        }
+        $projects = $project->select('id', 'name')->get();
         return view('admin.pages.tasks.create', compact('edit', 'projects'));
     }
 
@@ -72,7 +85,6 @@ class TaskController extends Controller
     public function store(TaskRequest $request)
     {
         $validatedData = $request->validated();
-        $validatedData['user_id'] = auth()->user()->id;
 
         Task::create($validatedData);
 

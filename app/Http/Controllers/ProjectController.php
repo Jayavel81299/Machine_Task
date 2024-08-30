@@ -7,13 +7,19 @@ use App\Http\Requests\UpdateProjectRequest;
 use Illuminate\Http\Request;
 use App\Models\Project;
 use Yajra\DataTables\Facades\DataTables;
+use App\CheckProjectWay;
 class ProjectController extends Controller
 {
- 
+    use CheckProjectWay;
     public function index(Request $request)
     {
         if($request->dataValue == 'yes'){
             $query = Project::query();
+
+            if(auth()->user()->role == 'project_manager'){
+                $query->where('project_manager_id', auth()->user()->id);
+            }
+
             $startDate = $request->input('start_date');
             $endDate = $request->input('end_date');
             
@@ -49,15 +55,23 @@ class ProjectController extends Controller
     }
     public function create()
     {
-        $members = User::where('role', 'team_member')->select('name', 'id')->get();
-        return view('admin.pages.projects.create', compact('members'));
-    }
+        $managers = '';
 
+        if (auth()->user()->role === 'admin') {
+           $managers = $this->typeRole();
+        }
+        $members = User::where('role', 'team_member')->select('name', 'id')->get();
+        return view('admin.pages.projects.create', compact('members', 'managers'));
+        
+    }
     public function store(StoreProjectRequest $request)
     {
         $validated = $request->validated();
-        $validated['project_manager_id']  = auth()->user()->id;
-
+        if (auth()->user()->role == 'project_manager') {
+            $validated['project_manager_id']  = auth()->user()->id;
+        }else{
+            $validated['project_manager_id'] = (int) $request->project_manager_id;
+        }
         if (isset($validated['user_ids']) && is_array($validated['user_ids'])) {
             $validated['user_ids'] = implode(',', $validated['user_ids']);
         }
@@ -67,14 +81,22 @@ class ProjectController extends Controller
     public function edit(string $id)
     {
         $edit = Project::findOrFail($id);
+        $managers = '';
+        if (auth()->user()->role === 'admin') {
+            $managers = $this->typeRole();
+         }
         $members = User::where('role', 'team_member')->select('name', 'id')->get();
-        return view('admin.pages.projects.create', compact('edit', 'members'));
+        return view('admin.pages.projects.create', compact('edit', 'members', 'managers'));
     }
 
     public function update(UpdateProjectRequest $request, Project $project)
     {
         $validated = $request->validated();
-
+        if (auth()->user()->role == 'project_manager') {
+            $validated['project_manager_id']  = auth()->user()->id;
+        }else{
+            $validated['project_manager_id'] = (int) $request->project_manager_id;
+        }
         if (isset($validated['user_ids']) && is_array($validated['user_ids'])) {
             $validated['user_ids'] = implode(',', $validated['user_ids']);
         }

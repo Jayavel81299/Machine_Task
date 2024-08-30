@@ -10,7 +10,7 @@
     <div class="mb-3">
         <div class="row">
             <div class="col-md-8">
-                <h4 class="fw-bold">Users List</h4>
+                <h4 class="fw-bold">Team Members List</h4>
             </div>
             <div class="col-md-4 text-end">
                 <a href="{{ route('users.create') }}"><button class="bg-primary text-white btn">Add New</button></a>

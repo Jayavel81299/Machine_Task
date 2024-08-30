@@ -25,22 +25,26 @@
                     <div class="col-md-6">
                         <label for="name" class="col-form-label">Project Name</label>
                         <select name="project_id" id="project_id" class="form-select">
-                            <option value="" disabled selected>Select Project</option>
+                            <option value="" disabled {{ !isset($edit->project_id) ? 'selected' : '' }}>
+                                Select Project
+                            </option>
                             @foreach ($projects as $item)
-                                <option value="{{ $item->id }}" {{ old('project_id', $edit->project_id ?? '') == $item->id ? 'selected' : '' }}>
+                                <option value="{{ $item->id }}" 
+                                    {{ (isset($edit->project_id) && $edit->project_id == $item->id) ? 'selected' : '' }}>
                                     {{ $item->name }}
                                 </option>
                             @endforeach
                         </select>
+                        
                         <div class="text-danger project_id-error errors_div"></div>
                     </div>
 
                     <div class="col-md-6">
                         <label for="name" class="col-form-label">Members</label>
-                        <select name="user_id[]" id="user_id" class="form-select">
+                        <select name="user_id" id="user_id" class="form-select">
                             <option value="" disabled selected="true">Choose Member</option>
                         </select>
-                        <div class="text-danger user_ids-error errors_div"></div>
+                        <div class="text-danger user_id-error errors_div"></div>
                     </div>
 
                     <!-- Description -->
@@ -96,7 +100,7 @@
 @section('scripts')
     <script src="{{ asset('admin/assets/js/jquery/jquery-3.6.0.min.js') }}"></script>
     <script src="{{ asset('admin/assets/js/basicValidation/index.js') }}"></script>
-    <script src="{{ asset('admin/assets/js/projects/index.js') }}"></script>
+    <script src="{{ asset('admin/assets/js/tasks/index.js') }}"></script>
     <script>
         $(function() {
             // Define functions
@@ -141,15 +145,14 @@
             });
 
             @if(isset($edit))
-                var project_id = '{{ $edit->project_id }}'; 
-                $('select#project_id').val(project_id).trigger('change');
+                $('select#project_id').trigger('change');
             @endif
         });
 
         function projectIdChanged(selectElement, nowId) {
             var formData = new FormData(); 
             formData.set('project_id', selectElement.val()); 
-            CommonAjax(baseUrl + 'get-members', "POST", formData, nowId || ''); 
+            CommonAjax("{{ route('getmembers') }}", "POST", formData, nowId); 
         }
 
     </script>

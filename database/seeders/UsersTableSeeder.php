@@ -31,7 +31,7 @@ class UsersTableSeeder extends Seeder
             ],
             [
                 'id' => 3,
-                'role' => 'project_manager',
+                'role' => 'team_member',
                 'name' => 'Test3',
                 'email' => 'test3@gmail.com',
                 'password' => Hash::make('12345678'),

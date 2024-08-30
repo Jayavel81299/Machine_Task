@@ -16,15 +16,21 @@ class Controller extends BaseController
         $this->middleware(function ($request, $next) {
             if (Auth::check()) {
                 $roles = Auth::user()->role;
-                $currentRouteName = $request->route()->getName(); 
-        
+                $currentRouteName = $request->route()->getName();
+
                 if (!RoleChecking($roles, $currentRouteName)) {
-                    return redirect('/'); 
+                    if ($request->ajax()) {
+                        return response()->json(['error' => 'Unauthorized'], 403);
+                    }
+                    return back();
                 }
             } else {
-                return redirect('/'); 
+                if ($request->ajax()) {
+                    return response()->json(['error' => 'Unauthorized'], 403);
+                }
+                return back();
             }
-        
+
             return $next($request);
         });
         

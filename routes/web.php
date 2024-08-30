@@ -14,5 +14,5 @@ Route::middleware('auth')->group(function () {
     Route::resource('/projects', App\Http\Controllers\ProjectController::class);
     Route::resource('/users', App\Http\Controllers\UserController::class);
     Route::resource('/tasks', App\Http\Controllers\TaskController::class);
-    Route::post('/get-members', [App\Http\Controllers\TaskController::class, 'getMembers']);
+    Route::post('/get-members', [App\Http\Controllers\TaskController::class, 'getMembers'])->name('getmembers');
 });

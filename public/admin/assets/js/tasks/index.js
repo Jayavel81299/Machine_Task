@@ -15,7 +15,7 @@ function validateInput(input, errorSelector) {
         }
     }
 
-    if (input.attr('id') === 'user_ids') {
+    if (input.attr('id') === 'user_id') {
         if (!value || value.length === 0) {
             $(errorSelector).text('Please select at least one member.');
             return false;
@@ -34,7 +34,7 @@ function validateInput(input, errorSelector) {
     }
 }
 
-$('#project_manager_id, #user_ids, #name, #description, #status, #start_date, #end_date').on('keyup change', function() {
+$('#project_id, #user_id, #description, #status, #start_date, #end_date').on('keyup change', function() {
     let input = $(this);
     let errorSelector = '.' + input.attr('id') + '-error';
     validateInput(input, errorSelector);
@@ -45,9 +45,8 @@ $('#formSubmit').on('submit', function(event) {
     event.preventDefault();
     let isValid = true;
 
-    isValid = validateInput($('#project_manager_id'), '.project_manager_id-error') && isValid;
-    isValid = validateInput($('#user_ids'), '.user_ids-error') && isValid;
-    isValid = validateInput($('#name'), '.name-error') && isValid;
+    isValid = validateInput($('#project_id'), '.project_id-error') && isValid;
+    isValid = validateInput($('#user_id'), '.user_id-error') && isValid;
     isValid = validateInput($('#description'), '.description-error') && isValid;
     isValid = validateInput($('#status'), '.status-error') && isValid;
     isValid = validateInput($('#start_date'), '.start_date-error') && isValid;

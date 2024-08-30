@@ -25,7 +25,6 @@ function CommonAjax(url, method, formData, submitBtn){
                             value: member.id,
                             text: member.name
                         });
-
                         if (editId && editId === member.id) {
                             option.attr('selected', 'selected'); 
                         }
@@ -45,7 +44,6 @@ function CommonAjax(url, method, formData, submitBtn){
             }
         },
         error: function(xhr) {
-            submitBtn.prop('disabled', false);
             if (xhr.status === 422) {
                 clrErr();
                 var resJSON = xhr.responseJSON;

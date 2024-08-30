@@ -15,8 +15,7 @@ class TaskRequest extends FormRequest
     {
         return [
             'project_id' => 'required|exists:projects,id',
-            'user_id' => 'required|array',
-            'user_id.*' => 'exists:users,id',
+            'user_id' => 'required',
             'description' => 'required|string',
             'status' => 'required|in:pending,complete',
             'start_date' => 'required|date',
@@ -29,8 +28,7 @@ class TaskRequest extends FormRequest
         return [
             'project_id.required' => 'The project field is required.',
             'project_id.exists' => 'The selected project does not exist.',
-            'user_ids.required' => 'Please select at least one member.',
-            'user_ids.*.exists' => 'One or more selected members are invalid.',
+            'user_id.required' => 'Please select at least one member.',
             'description.required' => 'The description field is required.',
             'status.required' => 'The status field is required.',
             'status.in' => 'The selected status is invalid.',

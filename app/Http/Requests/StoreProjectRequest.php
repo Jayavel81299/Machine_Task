@@ -32,6 +32,13 @@ class StoreProjectRequest extends FormRequest
             'end_date' => 'required|date|date_format:Y-m-d|after_or_equal:start_date',
             'status' => 'required',
         ];
+        if (auth()->user()->role == 'admin') {
+            $rules['project_manager_id'] = 'required|exists:users,id';
+        } else {
+            $rules['project_manager_id'] = 'sometimes|nullable|exists:users,id';
+        }
+        return $rules;
+    
     }
 
     /**
@@ -42,6 +49,7 @@ class StoreProjectRequest extends FormRequest
     public function messages()
     {
         return [
+            'project_manager_id.sometimes' => 'The project Manager field is required.',
             'user_ids.required' => 'The Members field is required.',
             'user_ids.*.exists' => 'Selected member does not exist.',
             'end_date.after_or_equal' => 'End date must be a date after or equal to the start date.',
