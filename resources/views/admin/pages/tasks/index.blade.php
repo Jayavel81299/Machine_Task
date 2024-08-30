@@ -43,5 +43,5 @@
     <script src="{{ asset('admin/assets/js/jquery/jquery-3.6.0.min.js') }}"></script>
     <script src="{{ asset('admin/assets/js/dataTable/jquery.dataTables.min.js')}}"></script>
     <script src="{{ asset('admin/assets/js/basicValidation/index.js') }}"></script>
-    <script src="{{ asset('admin/assets/js/projects/datatable.js') }}"></script>
+    <script src="{{ asset('admin/assets/js/tasks/datatable.js') }}"></script>
 @endsection

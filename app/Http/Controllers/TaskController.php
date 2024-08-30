@@ -7,9 +7,11 @@ use App\Models\User;
 use App\Models\Project;
 use App\Models\Task;
 use App\Http\Requests\TaskRequest;
+use Yajra\DataTables\Facades\DataTables;
 
 class TaskController extends Controller
 {
+   
     public function index(Request $request)
     {
         if($request->dataValue == 'yes'){
@@ -29,22 +31,18 @@ class TaskController extends Controller
 
             return DataTables::eloquent($query) 
                 ->addColumn('project_manager_id', function($project) {
-                    return User::whereId($project->project_manager_id)->pluck('name')->first();
+                    return User::whereId($project->project->project_manager_id)->pluck('name')->first();
                 })
-                ->addColumn('user_ids', function($project) {
-                    $userIds = explode(',', $project->user_ids); 
-                    return User::whereIn('id', $userIds)->pluck('name')->implode(', ');
+                ->addColumn('name', function($project) {
+                    return $project->project->name;
                 })
                 ->addColumn('action', function($project) {
                     return [
-                        'edit' => route('projects.edit', $project->id),
-                        'delete' => route('projects.destroy', $project->id),
-                        'url' => route('projects.show', $project->id),
-                    ];
+                        'edit' => route('tasks.edit', $project->id),
+                        'view' => route('tasks.show', $project->id),
+                        'delete' => route('tasks.destroy', $project->id),                    ];
                 })
                 ->toJson();
-
-            
         }else{
             return view('admin.pages.tasks.index');
         }
@@ -56,6 +54,14 @@ class TaskController extends Controller
         $projects = Project::where('project_manager_id', auth()->user()->id)->select('id', 'name')->get();
         return view('admin.pages.tasks.create', compact('projects'));
     }
+
+    public function edit(string $id)
+    {
+        $edit = Task::findOrFail($id);
+        $projects = Project::where('project_manager_id', auth()->user()->id)->select('id', 'name')->get();
+        return view('admin.pages.tasks.create', compact('edit', 'projects'));
+    }
+
     public function getMembers(Request $request)
     {
         $projects = Project::whereId($request->project_id)->pluck('user_ids')->first();
@@ -63,10 +69,10 @@ class TaskController extends Controller
         return response()->json(['task_members' => $users], 200);
     }
 
-
     public function store(TaskRequest $request)
     {
         $validatedData = $request->validated();
+        $validatedData['user_id'] = auth()->user()->id;
 
         Task::create($validatedData);
 
@@ -75,26 +81,21 @@ class TaskController extends Controller
 
     public function show(string $id)
     {
-        //
-    }
-
- 
-    public function edit(string $id)
-    {
-        $edit = User::findOrFail($id);
-        $projects = Project::where('project_manager_id', auth()->user()->id)->select('id', 'name')->get();
-        return view('admin.pages.tasks.create', compact('edit', 'projects'));
-    }
+        $edit = Task::findOrFail($id);
+        $manager = User::whereId($edit->project->project_manager_id)->pluck('name')->first();
+        return view('admin.pages.tasks.show', compact('edit' , 'manager'));   
+    }    
 
     public function update(TaskRequest $request, $id)
     {
         $task = Task::findOrFail($id);
         $validatedData = $request->validated();
-
-        // Update the task
+        unset($validatedData['user_id']);        
         $task->update($validatedData);
+
         return response()->json(['redirectUrl' => route('tasks.index')]);
     }
+    
 
     public function destroy(string $id)
     {

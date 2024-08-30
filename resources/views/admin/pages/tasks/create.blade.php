@@ -2,8 +2,6 @@
 
 @section('custom_styles')
     {{ $title = isset($edit) ? '- Edit Task' : '- Add Task' }}
-    <!-- select2 MultiSelect -->
-    <link href="{{ asset('admin/assets/css/select2/select2.min.css') }}" rel="stylesheet" />
 @endsection
 
 @section('content')
@@ -27,9 +25,11 @@
                     <div class="col-md-6">
                         <label for="name" class="col-form-label">Project Name</label>
                         <select name="project_id" id="project_id" class="form-select">
-                            <option value="" disabled selected="true">Select Project</option>
+                            <option value="" disabled selected>Select Project</option>
                             @foreach ($projects as $item)
-                                <option value="{{ $item->id }}" {{ old('name', $edit->name ?? '') === $item->name ? 'selected' : '' }}>{{ $item->name }}</option>
+                                <option value="{{ $item->id }}" {{ old('project_id', $edit->project_id ?? '') == $item->id ? 'selected' : '' }}>
+                                    {{ $item->name }}
+                                </option>
                             @endforeach
                         </select>
                         <div class="text-danger project_id-error errors_div"></div>
@@ -37,7 +37,7 @@
 
                     <div class="col-md-6">
                         <label for="name" class="col-form-label">Members</label>
-                        <select name="user_ids[]" id="user_ids" class="form-select">
+                        <select name="user_id[]" id="user_id" class="form-select">
                             <option value="" disabled selected="true">Choose Member</option>
                         </select>
                         <div class="text-danger user_ids-error errors_div"></div>
@@ -134,13 +134,23 @@
             @endif
         });
 
-        $(document).on('change', 'select#project_id', function() {
-            var formElement = $(this).closest('form')[0]; 
-            var formData = new FormData(formElement); 
-            formData.append('project_id', $(this).val());
-            CommonAjax(baseUrl + 'get-members', "POST", formData, '');
+        $(document).ready(function() {
+            $(document).on('change', 'select#project_id', function() {
+                var userId = '{{ $edit->user_id ?? '' }}'; 
+                projectIdChanged($(this), userId); 
+            });
+
+            @if(isset($edit))
+                var project_id = '{{ $edit->project_id }}'; 
+                $('select#project_id').val(project_id).trigger('change');
+            @endif
         });
 
+        function projectIdChanged(selectElement, nowId) {
+            var formData = new FormData(); 
+            formData.set('project_id', selectElement.val()); 
+            CommonAjax(baseUrl + 'get-members', "POST", formData, nowId || ''); 
+        }
+
     </script>
-    
 @endsection

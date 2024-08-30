@@ -12,25 +12,33 @@ function CommonAjax(url, method, formData, submitBtn){
             if(response.delete_type){
                 $('#datatable').DataTable().ajax.reload();
             }else if(response.task_members){
-                var taskMembersSelect = $('#user_ids');
-                taskMembersSelect.empty(); 
+                var taskMembersSelect = $('#user_id');
+                var editId = submitBtn;
+                taskMembersSelect.empty();
                 taskMembersSelect.append($('<option>', {
                     value: '',
-                    text: 'Choose member'
+                    text: 'Choose Member'
                 }));
-                
                 if (response.task_members && response.task_members.length > 0) {
                     $.each(response.task_members, function(index, member) {
-                        taskMembersSelect.append($('<option>', {
+                        var option = $('<option>', {
                             value: member.id,
                             text: member.name
-                        }));
+                        });
+
+                        if (editId && editId === member.id) {
+                            option.attr('selected', 'selected'); 
+                        }
+                        taskMembersSelect.append(option);
                     });
                 } else {
                     taskMembersSelect.append($('<option>', {
                         value: '',
                         text: 'No members found'
                     }));
+                }
+                if (editId) {
+                    taskMembersSelect.val(editId);
                 }
             }else{
                 window.location.href = response.redirectUrl; 

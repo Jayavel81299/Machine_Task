@@ -15,8 +15,8 @@ class TaskRequest extends FormRequest
     {
         return [
             'project_id' => 'required|exists:projects,id',
-            'user_ids' => 'required|array',
-            'user_ids.*' => 'exists:users,id',
+            'user_id' => 'required|array',
+            'user_id.*' => 'exists:users,id',
             'description' => 'required|string',
             'status' => 'required|in:pending,complete',
             'start_date' => 'required|date',
