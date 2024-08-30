@@ -23,7 +23,7 @@
                 @isset($edit)
                     @method('PUT')
                 @endisset
-                <div class="row">
+                <div class="row @if(auth()->user()->role == 'admin') checkmanager @endif" id='projectManage'>
                     <!-- Project Name -->
                     @if(auth()->user()->role == 'admin')
                     <div class="col-md-6">
